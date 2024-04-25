@@ -1,12 +1,39 @@
 import Phaser from 'phaser';
-import { Assets } from './asset/import';
+import { loadAssetsTo } from './asset/import';
+import Bird from './bird';
+import Spawner from './spawner';
+import Control from './control';
 
 export class GameScene extends Phaser.Scene {
+
+    public control: Control | undefined
+
     preload() {
-        const x = this.load.image(Assets.bgr.id, Assets.bgr.path);
+        loadAssetsTo(this)
     }
 
     create() {
-        this.add.image(0, 0, Assets.bgr.id)
+        this.control = new Control(this)
+
+        const bird = this.makeBird()
+
+        this.add.existing(new Spawner(this, bird))
+
+        const camera = this.cameras.main
+            .setBackgroundColor(0x443300)
+            .centerOn(0, 0)
+
+        this.physics.world.bounds
+            .setPosition(camera.scrollX, camera.scrollY)
+            .setSize(camera.displayWidth, camera.displayHeight)
+    }
+
+    override update() {
+        this.control!.update()
+    }
+
+    private makeBird() {
+        const bird = this.add.existing(new Bird(this, this.control!.inGame)) as Bird
+        return bird
     }
 }

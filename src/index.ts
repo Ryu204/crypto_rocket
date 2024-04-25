@@ -1,21 +1,29 @@
-import './css/style.css';
-import Phaser from 'phaser';
-import { GameScene } from './scene';
+import './css/style.css'
+import Phaser from 'phaser'
+import { GameScene } from './scene'
+import config from './config.json'
 
 try {
 
-const config: Phaser.Types.Core.GameConfig = {
+const gameConfig: Phaser.Types.Core.GameConfig = {
     type: Phaser.WEBGL,
-    height: 500, 
-    width: 500,
+    height: config.game.height, 
+    width: config.game.width,
     canvas: document.getElementById('gameCanvas') as HTMLCanvasElement,
     physics: {
         default: 'arcade',
+        arcade: {
+            gravity: {
+                x: 0,
+                y: config.game.gravity
+            },
+            debug: true
+        }
     },
     scene: [GameScene],
 }
 
-const game = new Phaser.Game(config)
+const game = new Phaser.Game(gameConfig)
 
 } catch (e) {
     console.log(`error happened: ${e}`)

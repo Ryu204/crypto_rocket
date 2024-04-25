@@ -10,11 +10,10 @@ header, footer, main {
     align-content: center;
     justify-content: center;
     color: steelblue;
+    text-align: center;
 }
 
 #gameCanvas {
-    display: flex;
-    align-self: center;
     border: 2px solid steelblue;
-    border-radius: 5px;
+    border-radius: 10px;
 }
