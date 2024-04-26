@@ -2,16 +2,18 @@
     "spawner": {
         "interval": 2.5,
         "pipeSpeed": 100,
-        "gapPerBird": 4
+        "gapPerBird": 4,
+        "maxAmplitude": 100
     },
     "bird": {
         "width": 20,
-        "pushStrength": 2200,
+        "scale": 1.2,
+        "pushStrength": 3000,
         "maxVelocityY": 300
     },
     "game": {
         "width": 500,
         "height": 500,
-        "gravity": 600
+        "gravity": 1000
     }
 }

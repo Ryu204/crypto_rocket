@@ -15,6 +15,7 @@ export default class Bird extends Phaser.GameObjects.Container {
 
     preUpdate() {
         if (this.mInGame.holding) {
+            this.arcadeBody.setVelocityY(Math.min(0, this.arcadeBody.velocity.y))
             this.arcadeBody.setAccelerationY(-config.bird.pushStrength)
         } else {
             this.arcadeBody.setAccelerationY(0)
@@ -22,7 +23,8 @@ export default class Bird extends Phaser.GameObjects.Container {
     }
 
     private buildVisual() {
-        this.add(this.scene.add.image(0, 0, assets.bird.id))
+        const img = this.add(this.scene.add.image(0, 0, assets.bird.id))
+        img.setScale(config.bird.scale)
     }
 
     private buildPhysics() {

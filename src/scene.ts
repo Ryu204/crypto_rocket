@@ -3,6 +3,7 @@ import { loadAssetsTo } from './asset/import';
 import Bird from './bird';
 import Spawner from './spawner';
 import Control from './control';
+import Score from './score';
 
 export class GameScene extends Phaser.Scene {
 
@@ -13,12 +14,6 @@ export class GameScene extends Phaser.Scene {
     }
 
     create() {
-        this.control = new Control(this)
-
-        const bird = this.makeBird()
-
-        this.add.existing(new Spawner(this, bird))
-
         const camera = this.cameras.main
             .setBackgroundColor(0x443300)
             .centerOn(0, 0)
@@ -26,6 +21,15 @@ export class GameScene extends Phaser.Scene {
         this.physics.world.bounds
             .setPosition(camera.scrollX, camera.scrollY)
             .setSize(camera.displayWidth, camera.displayHeight)
+
+        this.control = new Control(this)
+
+        const { score } = this.makeUi()
+
+
+        const bird = this.makeBird()
+
+        this.add.existing(new Spawner(this, bird, score))
     }
 
     override update() {
@@ -35,5 +39,10 @@ export class GameScene extends Phaser.Scene {
     private makeBird() {
         const bird = this.add.existing(new Bird(this, this.control!.inGame)) as Bird
         return bird
+    }
+
+    private makeUi() {
+        const score = this.add.existing(new Score(this))
+        return { score }
     }
 }

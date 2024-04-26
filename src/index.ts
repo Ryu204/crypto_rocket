@@ -21,6 +21,7 @@ const gameConfig: Phaser.Types.Core.GameConfig = {
         }
     },
     scene: [GameScene],
+    autoMobilePipeline: true,
 }
 
 const game = new Phaser.Game(gameConfig)
