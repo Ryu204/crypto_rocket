@@ -7,6 +7,7 @@ import Score from './score';
 import GameOverOverlay from './gameOverOverlay';
 import FullscreenButton from './fullscreen';
 import config from './config.json'
+import FuelBar from './fuelBar';
 
 enum State {
     idle, game, gameOver
@@ -39,9 +40,8 @@ export class GameScene extends Phaser.Scene {
 
         this.control = new Control(this)
 
-        const { score } = this.makeUi()
-
         this.mBird = this.makeBird()
+        const { score } = this.makeUi()
         this.mSpawner = this.add.existing(new Spawner(this, this.mBird, score)) as Spawner
         this.mState = State.idle
 
@@ -102,6 +102,7 @@ export class GameScene extends Phaser.Scene {
     private makeUi() {
         const score = this.add.existing(new Score(this))
         const fs = this.add.existing(new FullscreenButton(this, this.scale.isFullscreen))
+        const fuelBar = this.add.existing(new FuelBar(this, this.mBird!))
         this.scale.removeAllListeners()
         this.scale.on(Phaser.Scale.Events.ENTER_FULLSCREEN, () => {
             this.scale.resize(screen.width * config.game.height / screen.height, config.game.height)
@@ -111,6 +112,6 @@ export class GameScene extends Phaser.Scene {
             this.scale.resize(config.game.width, config.game.height)
             this.restart()
         })
-        return { score, fs }
+        return { score, fs, fuelBar }
     }
 }

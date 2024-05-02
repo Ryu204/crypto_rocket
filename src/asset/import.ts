@@ -1,5 +1,7 @@
 import _missile from './missile.png'
 import _missileData from './missile.json'
+import _theonite from './theonite.png'
+import _theoniteData from './theonite.json'
 import _pipe from './pipe.png'
 import _fullscreen from './fullscreen.png'
 import _fullscreen2 from './fullscreen_2.png'
@@ -39,6 +41,7 @@ export class Asset {
 
 const assets = {
     missile: new Asset(_missile, Type.spritesheet, { anim: _missileData }),
+    theonite: new Asset(_theonite, Type.spritesheet, {anim: _theoniteData}),
     pipe: new Asset(_pipe, Type.image),
     fullscreen: new Asset(_fullscreen, Type.image),
     fullscreen2: new Asset(_fullscreen2, Type.image),

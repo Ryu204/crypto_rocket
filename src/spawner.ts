@@ -1,51 +1,31 @@
-import Phaser from 'phaser'
+import Phaser, { Physics } from 'phaser'
 import assets from './asset/import'
 import Bird from './bird'
 import config from './config.json'
 import Score from './score'
 import { GameScene } from './gameScene'
 
-class DoublePipe extends Phaser.GameObjects.Container {
-    constructor(scene: GameScene, gap: number, bird: Bird, score: Score) {
-        super(scene)
-
-        const up = scene.physics.add.image(0, -gap / 2, assets.pipe.id)
-            .setRotation(Math.PI)
-            .setOrigin(0.5, 0)
-        up.body
-            .setImmovable(true)
-            .setAllowGravity(false)
-            .setOffset(0, -up.height)
-            .setVelocityX(-config.spawner.pipeSpeed)
-
-        const down = scene.physics.add.image(0, gap / 2, assets.pipe.id)
-            .setOrigin(0.5, 0)
-        down.body
+class Theonite extends Phaser.GameObjects.Container {
+    constructor(scene: GameScene, bird: Bird, score: Score) {
+        super(scene)        
+        const theonite = scene.add.sprite(0, 0, assets.theonite.id)
+            .play('idle')
+        theonite.setScale(config.spawner.sizePerBird * config.bird.width * config.bird.scale / theonite.height)
+        scene.physics.add.existing(theonite)
+        ;(theonite.body as Phaser.Physics.Arcade.Body)
             .setImmovable(true)
             .setAllowGravity(false)
             .setVelocityX(-config.spawner.pipeSpeed)
-        
-        const mid = scene.add.container()
-        scene.physics.add.existing(mid)
-        ;(mid.body as Phaser.Physics.Arcade.Body)
-            .setImmovable(true)
-            .setAllowGravity(false)
-            .setVelocityX(-config.spawner.pipeSpeed)
-            .setSize(2, 300)
-            .setOffset(30, -150)
-
-        this.add([up, down, mid])
-        scene.physics.add.collider(bird, [up, down], (b, p) => { 
-            scene.gameOver()
-        })
-        scene.physics.add.overlap(bird, mid, (b, m) => { 
+        scene.physics.add.overlap(bird, theonite, (b, m) => { 
             score.increase() 
-            mid.destroy()
+            this.destroy()
+            bird.recharge(config.spawner.fuel)
         })
+        this.add(theonite)
     }
 
-    get pipeX() {
-        return this.x + (this.getAll()[0] as Phaser.Types.Physics.Arcade.ImageWithDynamicBody).x
+    get positionX() {
+        return this.x + (this.getAt(0).body! as Physics.Arcade.Body).x
     }
 
     stop() {
@@ -74,11 +54,11 @@ export default class Spawner extends Phaser.GameObjects.Group {
         super.preUpdate(time, delta)
         const toDestroy: Phaser.GameObjects.GameObject[] = []
         this.children.entries.forEach((v, i, a) => {
-            if (!(v instanceof DoublePipe))
+            if (!(v instanceof Theonite))
                 return
-            const ps = v as DoublePipe
-            if (ps.pipeX < (this.scene as GameScene).leftLimit())
-                toDestroy.push(ps)
+            const theo = v as Theonite
+            if (theo.positionX < (this.scene as GameScene).leftLimit())
+                toDestroy.push(theo)
         })
         toDestroy.forEach((e, i, a) => { e.destroy() })
     }
@@ -92,7 +72,7 @@ export default class Spawner extends Phaser.GameObjects.Group {
             return
         this.mPause = true
         for (const i of this.getChildren()) {
-            ;(i as DoublePipe).stop()
+            ;(i as Theonite).stop()
         }
     }
 
@@ -109,8 +89,7 @@ export default class Spawner extends Phaser.GameObjects.Group {
     }
 
     private spawn() {
-        const gap = config.spawner.gapPerBird * config.bird.width * config.bird.scale
-        const pipes = this.scene.add.existing(new DoublePipe(this.scene as GameScene, gap, this.mBird, this.mScore))
+        const pipes = this.scene.add.existing(new Theonite(this.scene as GameScene, this.mBird, this.mScore))
         pipes.x = (this.scene as GameScene).rightLimit()
         pipes.y = (this.mRnd.frac() * 2 - 1) * config.spawner.maxAmplitude
         this.add(pipes)

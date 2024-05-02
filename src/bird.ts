@@ -22,6 +22,8 @@ export default class Bird extends Phaser.GameObjects.Container {
     mInGame: InGame
     mState: State
     mSprite: Phaser.GameObjects.Sprite
+    private fuelCapacity: number
+    private fuelCurrent: number
 
     constructor(scene : Phaser.Scene, inGameControl: InGame) {
         super(scene)
@@ -29,6 +31,7 @@ export default class Bird extends Phaser.GameObjects.Container {
         this.buildPhysics()
         this.mInGame = inGameControl
         this.mState = State.idle
+        this.fuelCurrent = this.fuelCapacity = config.bird.fuel
     }
 
     preUpdate(time: number, delta: number) {
@@ -38,11 +41,12 @@ export default class Bird extends Phaser.GameObjects.Container {
                 this.setY(amp * Math.sin(time * config.bird.beginAnimationSpeed))
                 break
             case State.boost:
+                this.fuelCurrent -= delta / 1000 * config.bird.fuelSpeed
                 this.limitUpVelocity() // Cannot go up too fast
                 this.arcadeBody.velocity.y = Math.min(this.arcadeBody.velocity.y, 0) // Immediately change velocity when pressed
                 this.mSprite.rotation = Math.min(this.mSprite.rotation, Math.PI / 2)
                 this.arcadeBody.setAccelerationY(-config.bird.pushStrength)
-                if (!this.mInGame.holding) {
+                if (this.fuel < 0 || !this.mInGame.holding) {
                     this.mSprite.play(AnimTags.fall)
                     this.arcadeBody.setAccelerationY(0)
                     this.mState = State.fall
@@ -51,7 +55,8 @@ export default class Bird extends Phaser.GameObjects.Container {
                     (this.scene as GameScene).gameOver()
                 break
             case State.fall:
-                if (this.mInGame.holding) {
+                this.fuelCurrent -= delta / 1000 * config.bird.fuelSpeed * config.bird.fallFuelSpeedScale
+                if (this.mInGame.holding && this.fuel > 0) {
                     this.mSprite.play(AnimTags.boost)
                     this.mState = State.boost
                 }
@@ -64,12 +69,21 @@ export default class Bird extends Phaser.GameObjects.Container {
                 }
         }
         this.updateRotation(delta)
+        this.fuelCurrent = Phaser.Math.Clamp(this.fuelCurrent, 0, this.fuelCapacity)
     }
 
     play() {
         this.mState = State.boost
         this.arcadeBody.setAllowGravity(true).setVelocityY(-999999999)
         this.mSprite.play(AnimTags.boost)
+    }
+
+    get fuel() {
+        return this.fuelCurrent / this.fuelCapacity
+    }
+
+    recharge(fuel: number) {
+        this.fuelCurrent = Math.min(this.fuelCapacity, this.fuelCurrent + fuel)
     }
 
     die() {
@@ -108,7 +122,7 @@ export default class Bird extends Phaser.GameObjects.Container {
         if (this.mState == State.dead)
             return
         const omega = config.bird.omegaPerVelY * this.arcadeBody.velocity.y
-        this.mSprite.rotation += omega * dt
+        this.mSprite.rotation += omega * dt / 1000
         this.mSprite.setRotation(Phaser.Math.Clamp(this.mSprite.rotation, Math.PI / 4, 3 * Math.PI / 4))
     }
 }

@@ -2,8 +2,9 @@
     "spawner": {
         "interval": 2.5,
         "pipeSpeed": 100,
-        "gapPerBird": 4,
-        "maxAmplitude": 100
+        "sizePerBird": 1.5,
+        "maxAmplitude": 200,
+        "fuel": 2
     },
     "bird": {
         "beginAmplitudePerWidth": 0.7,
@@ -12,7 +13,10 @@
         "scale": 2,
         "pushStrength": 3000,
         "maxVelocityY": 200,
-        "omegaPerVelY": 0.00001
+        "omegaPerVelY": 0.03,
+        "fuel": 2,
+        "fuelSpeed": 1.5,
+        "fallFuelSpeedScale": 0.2
     },
     "game": {
         "width": 500,
