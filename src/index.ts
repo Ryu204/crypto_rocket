@@ -1,14 +1,12 @@
 import './css/style.css'
 import Phaser from 'phaser'
-import { GameScene } from './scene'
+import { GameScene } from './gameScene'
 import config from './config.json'
 
 try {
 
 const gameConfig: Phaser.Types.Core.GameConfig = {
-    type: Phaser.WEBGL,
-    height: config.game.height, 
-    width: config.game.width,
+    type: Phaser.CANVAS,
     canvas: document.getElementById('gameCanvas') as HTMLCanvasElement,
     physics: {
         default: 'arcade',
@@ -21,6 +19,16 @@ const gameConfig: Phaser.Types.Core.GameConfig = {
         }
     },
     scene: [GameScene],
+    dom: {
+        createContainer: true
+    },
+    scale: {
+        mode: Phaser.Scale.NONE,
+        fullscreenTarget: 'gameCanvas',  
+        width: config.game.width,
+        height: config.game.height,
+    },
+    parent: document.getElementById('gameContainer')!,
     autoMobilePipeline: true,
 }
 

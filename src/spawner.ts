@@ -3,9 +3,10 @@ import assets from './asset/import'
 import Bird from './bird'
 import config from './config.json'
 import Score from './score'
+import { GameScene } from './gameScene'
 
 class DoublePipe extends Phaser.GameObjects.Container {
-    constructor(scene: Phaser.Scene, gap: number, bird: Bird, score: Score) {
+    constructor(scene: GameScene, gap: number, bird: Bird, score: Score) {
         super(scene)
 
         const up = scene.physics.add.image(0, -gap / 2, assets.pipe.id)
@@ -34,7 +35,9 @@ class DoublePipe extends Phaser.GameObjects.Container {
             .setOffset(30, -150)
 
         this.add([up, down, mid])
-        scene.physics.add.collider(bird, [up, down], (b, p) => { console.log('collided') })
+        scene.physics.add.collider(bird, [up, down], (b, p) => { 
+            scene.gameOver()
+        })
         scene.physics.add.overlap(bird, mid, (b, m) => { 
             score.increase() 
             mid.destroy()
@@ -44,6 +47,12 @@ class DoublePipe extends Phaser.GameObjects.Container {
     get pipeX() {
         return this.x + (this.getAll()[0] as Phaser.Types.Physics.Arcade.ImageWithDynamicBody).x
     }
+
+    stop() {
+        for (const i of this.getAll('body')) {
+            ;(i.body! as Phaser.Physics.Arcade.Body).setVelocity(0)
+        }
+    }
 }
 
 export default class Spawner extends Phaser.GameObjects.Group {
@@ -51,10 +60,10 @@ export default class Spawner extends Phaser.GameObjects.Group {
     mRnd: Phaser.Math.RandomDataGenerator
     mBird: Bird
     mScore: Score
+    mPause: boolean = false
 
     constructor(scene: Phaser.Scene, bird: Bird, score: Score) {
         super(scene)
-        this.setUpSpawn()
         this.mBird = bird
         this.mRnd = new Phaser.Math.RandomDataGenerator(['Hello, world', '1', '2', Date.now().toString()])
         this.runChildUpdate = false
@@ -68,37 +77,42 @@ export default class Spawner extends Phaser.GameObjects.Group {
             if (!(v instanceof DoublePipe))
                 return
             const ps = v as DoublePipe
-            if (ps.pipeX < this.leftLimit())
+            if (ps.pipeX < (this.scene as GameScene).leftLimit())
                 toDestroy.push(ps)
         })
-        toDestroy.forEach((e, i, a) => { e.destroy(); console.log('bye bye') })
+        toDestroy.forEach((e, i, a) => { e.destroy() })
+    }
+
+    startSpawning() {
+        this.setUpSpawn()
+    }
+
+    stop() {
+        if (this.mPause)
+            return
+        this.mPause = true
+        for (const i of this.getChildren()) {
+            ;(i as DoublePipe).stop()
+        }
     }
 
     private setUpSpawn() {
         const millisPerSec = 1000
         const interval = config.spawner.interval * millisPerSec
         const f: Function = () => {
+            if (this.mPause)
+                return
             this.spawn()
             this.scene.time.delayedCall(interval, f)
         }
-        this.scene.time.delayedCall(interval, f)
+        f()
     }
 
     private spawn() {
         const gap = config.spawner.gapPerBird * config.bird.width * config.bird.scale
-        const pipes = this.scene.add.existing(new DoublePipe(this.scene, gap, this.mBird, this.mScore))
-        pipes.x = this.rightLimit()
+        const pipes = this.scene.add.existing(new DoublePipe(this.scene as GameScene, gap, this.mBird, this.mScore))
+        pipes.x = (this.scene as GameScene).rightLimit()
         pipes.y = (this.mRnd.frac() * 2 - 1) * config.spawner.maxAmplitude
         this.add(pipes)
-    }
-
-    private rightLimit(offset: number = 100) {
-        const cam = this.scene.cameras.main
-        return cam.scrollX + cam.displayWidth + offset
-    }
-
-    private leftLimit(offset: number = 100) {
-        const cam = this.scene.cameras.main
-        return cam.scrollX - offset
     }
 }

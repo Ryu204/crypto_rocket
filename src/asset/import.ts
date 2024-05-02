@@ -1,6 +1,8 @@
 import _bgr from './bgr.jpg'
 import _bird from './bird.png'
 import _pipe from './pipe.png'
+import _fullscreen from './fullscreen.png'
+import _fullscreen2 from './fullscreen_2.png'
 import Phaser from 'phaser'
 
 export enum Type {
@@ -28,6 +30,8 @@ const assets = {
     bgr: new Asset(_bgr, Type.image),
     bird: new Asset(_bird, Type.image),
     pipe: new Asset(_pipe, Type.image),
+    fullscreen: new Asset(_fullscreen, Type.image),
+    fullscreen2: new Asset(_fullscreen2, Type.image)
 }
 
 export default assets

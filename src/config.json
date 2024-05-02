@@ -6,6 +6,8 @@
         "maxAmplitude": 100
     },
     "bird": {
+        "beginAmplitudePerWidth": 0.7,
+        "beginAnimationSpeed": 0.006,
         "width": 20,
         "scale": 1.2,
         "pushStrength": 3000,

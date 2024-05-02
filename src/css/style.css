@@ -3,7 +3,7 @@
     background-color: antiquewhite;
 }
 
-header, footer, main {
+header, footer, main, #gameContainer {
     display: flex;
     align-items: center;
     align-self: center;
@@ -13,7 +13,11 @@ header, footer, main {
     text-align: center;
 }
 
+main {
+    max-height: 500;
+}
+
 #gameCanvas {
-    border: 2px solid steelblue;
-    border-radius: 10px;
+    /* border: 2px solid steelblue;
+    border-radius: 10px; */
 }
