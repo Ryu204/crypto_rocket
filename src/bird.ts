@@ -6,17 +6,26 @@ import { GameScene } from './gameScene'
 
 enum State {
     idle,
-    game,
+    boost,
+    fall,
     dead
+}
+
+enum AnimTags {
+    boost = 'boost',
+    ignite = 'ignite',
+    die = 'boom',
+    fall = 'still'
 }
 
 export default class Bird extends Phaser.GameObjects.Container {
     mInGame: InGame
     mState: State
+    mSprite: Phaser.GameObjects.Sprite
 
     constructor(scene : Phaser.Scene, inGameControl: InGame) {
         super(scene)
-        this.buildVisual()
+        this.mSprite = this.buildVisual().sprite
         this.buildPhysics()
         this.mInGame = inGameControl
         this.mState = State.idle
@@ -28,38 +37,53 @@ export default class Bird extends Phaser.GameObjects.Container {
                 const amp = config.bird.beginAmplitudePerWidth * config.bird.width
                 this.setY(amp * Math.sin(time * config.bird.beginAnimationSpeed))
                 break
-            case State.game:
-                if (this.mInGame.holding) {
-                    this.arcadeBody.setVelocityY(Phaser.Math.Clamp(this.arcadeBody.velocity.y, -config.bird.maxVelocityY, 0))
-                    this.arcadeBody.setAccelerationY(-config.bird.pushStrength)
-                } else {
+            case State.boost:
+                this.limitUpVelocity() // Cannot go up too fast
+                this.arcadeBody.velocity.y = Math.min(this.arcadeBody.velocity.y, 0) // Immediately change velocity when pressed
+                this.mSprite.rotation = Math.min(this.mSprite.rotation, Math.PI / 2)
+                this.arcadeBody.setAccelerationY(-config.bird.pushStrength)
+                if (!this.mInGame.holding) {
+                    this.mSprite.play(AnimTags.fall)
                     this.arcadeBody.setAccelerationY(0)
+                    this.mState = State.fall
+                }
+                if (this.arcadeBody.onFloor())
+                    (this.scene as GameScene).gameOver()
+                break
+            case State.fall:
+                if (this.mInGame.holding) {
+                    this.mSprite.play(AnimTags.boost)
+                    this.mState = State.boost
                 }
                 if (this.arcadeBody.onFloor())
                     (this.scene as GameScene).gameOver()
                 break
             case State.dead:
-                break
+                if (this.mSprite.anims.getProgress() >= 1) {
+                    this.mSprite.alpha = 0
+                }
         }
+        this.updateRotation(delta)
     }
 
     play() {
-        this.mState = State.game 
-        this.arcadeBody.setAllowGravity(true).setVelocityY(-100000)
+        this.mState = State.boost
+        this.arcadeBody.setAllowGravity(true).setVelocityY(-999999999)
+        this.mSprite.play(AnimTags.boost)
     }
 
     die() {
-        const body = this.body! as Phaser.Physics.Arcade.Body
-        body.setVelocity(0)
-        body.setAcceleration(0)
-        body.setCollidesWith([])
-        this.removeFromUpdateList()
+        this.arcadeBody.destroy()
         this.mState = State.dead
+        this.mSprite.play(AnimTags.die).setRotation(Math.PI / 2)
     }
 
     private buildVisual() {
-        const img = this.add(this.scene.add.image(0, 0, assets.bird.id))
-        img.setScale(config.bird.scale).setDepth(1)
+        const sprite = this.scene.add.sprite(0, 0, assets.missile.id)
+        this.add(sprite).setDepth(1)
+        sprite.setScale(config.bird.scale).setRotation(Math.PI / 2)
+        sprite.anims.play(AnimTags.boost)
+        return { sprite }
     }
 
     private buildPhysics() {
@@ -74,5 +98,17 @@ export default class Bird extends Phaser.GameObjects.Container {
 
     get arcadeBody() {
         return this.body as Phaser.Physics.Arcade.Body
+    }
+
+    private limitUpVelocity() {
+        this.arcadeBody.velocity.y = Math.max(this.arcadeBody.velocity.y, -config.bird.maxVelocityY)
+    }
+
+    private updateRotation(dt: number) {
+        if (this.mState == State.dead)
+            return
+        const omega = config.bird.omegaPerVelY * this.arcadeBody.velocity.y
+        this.mSprite.rotation += omega * dt
+        this.mSprite.setRotation(Phaser.Math.Clamp(this.mSprite.rotation, Math.PI / 4, 3 * Math.PI / 4))
     }
 }

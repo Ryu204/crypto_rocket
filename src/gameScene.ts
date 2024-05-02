@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { loadAssetsTo } from './asset/import';
+import { loadAssetsTo, finishLoading } from './asset/import';
 import Bird from './bird';
 import Spawner from './spawner';
 import Control, { Events } from './control';
@@ -28,6 +28,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     create() {
+        finishLoading()
         const camera = this.cameras.main
             .setBackgroundColor(0x443355)
             .centerOn(0, 0)

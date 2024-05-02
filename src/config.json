@@ -9,9 +9,10 @@
         "beginAmplitudePerWidth": 0.7,
         "beginAnimationSpeed": 0.006,
         "width": 20,
-        "scale": 1.2,
+        "scale": 2,
         "pushStrength": 3000,
-        "maxVelocityY": 300
+        "maxVelocityY": 200,
+        "omegaPerVelY": 0.00001
     },
     "game": {
         "width": 500,

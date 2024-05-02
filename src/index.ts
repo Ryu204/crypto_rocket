@@ -28,6 +28,7 @@ const gameConfig: Phaser.Types.Core.GameConfig = {
         width: config.game.width,
         height: config.game.height,
     },
+    pixelArt: true,
     parent: document.getElementById('gameContainer')!,
     autoMobilePipeline: true,
 }
