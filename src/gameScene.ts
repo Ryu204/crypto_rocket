@@ -15,10 +15,13 @@ enum State {
 
 export class GameScene extends Phaser.Scene {
 
-    public control: Control | undefined
-    mState: State = State.idle
-    mBird: Bird | undefined
-    mSpawner: Spawner | undefined
+    private mState: State = State.idle
+    private mBird: Bird | undefined
+    private mSpawner: Spawner | undefined
+
+    control: Control | undefined
+    confirmSfx: Phaser.Sound.BaseSound | undefined
+    hoverSfx: Phaser.Sound.BaseSound | undefined
 
     constructor() {
         super({ key: 'game' })
@@ -41,9 +44,11 @@ export class GameScene extends Phaser.Scene {
         this.control = new Control(this)
 
         this.mBird = this.makeBird()
-        const { score, fs, fuelBar, clickImg } = this.makeUi()
+        const { score, fs, fuelBar, clickImg, cf, hv } = this.makeUi()
         this.mSpawner = this.add.existing(new Spawner(this, this.mBird, score)) as Spawner
         this.mState = State.idle
+        this.confirmSfx = cf
+        this.hoverSfx = hv
 
         this.control.inGame.events.on(Events.keyUp, () => { 
             if (this.mState != State.idle)
@@ -60,15 +65,17 @@ export class GameScene extends Phaser.Scene {
         this.mState = State.game
     }
 
-    gameOver() {
+    gameOver(mute: boolean) {
         if (this.mState == State.gameOver)
         this.mState = State.gameOver
         this.mSpawner!.stop()
-        this.mBird!.die()
+        this.mBird!.die(mute)
         this.add.existing(new GameOverOverlay(this))
+        this.cameras.main.shake(100, 0.01)
     }
 
     restart() {
+        this.gameOver(true) // Stop all sounds
         this.scene.restart()
     }
 
@@ -106,18 +113,27 @@ export class GameScene extends Phaser.Scene {
         const fs = this.add.existing(new FullscreenButton(this, this.scale.isFullscreen))
         const fuelBar = this.add.existing(new FuelBar(this, this.mBird!))
         const clickImg = this.add.image(0, 0, assets.click.id)
+        const cf = this.sound.add(assets.confirm.id)
+        const hv = this.sound.add(assets.hover.id)
 
         score.setAlpha(0)
         clickImg.setScale(2).setY(100)
         this.scale.removeAllListeners()
         this.scale.on(Phaser.Scale.Events.ENTER_FULLSCREEN, () => {
-            this.scale.resize(screen.width * config.game.height / screen.height, config.game.height)
+            this.resize(screen.width * config.game.height / screen.height, config.game.height)
             this.restart()
         })
         this.scale.on(Phaser.Scale.Events.LEAVE_FULLSCREEN, () => {
-            this.scale.resize(config.game.width, config.game.height)
+            this.resize(config.game.width, config.game.height)
             this.restart()
         })
-        return { score, fs, fuelBar, clickImg }
+        return { score, fs, fuelBar, clickImg, cf, hv }
+    }
+
+    private resize(width: number, height: number) {
+        this.scale.resize(width, height)
+        if (this.game.config.renderType == Phaser.WEBGL) {
+            this.game.renderer.resize(width, height)
+        }
     }
 }

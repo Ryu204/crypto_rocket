@@ -15,6 +15,7 @@ export default class FullscreenButton extends Phaser.GameObjects.Image {
             .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, (ptr: any, x: any, y: any, ip: Phaser.Types.Input.EventData) => {
                 ip.stopPropagation()
                 this.scene.scale.toggleFullscreen()
+                ;(this.scene as GameScene).confirmSfx?.play()
             })
             .resetPosition()
     }

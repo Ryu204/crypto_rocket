@@ -16,6 +16,7 @@ export default class GameOverOverlay extends Phaser.GameObjects.Container {
 
         const restartCallback = () => { 
             ;(this.scene as GameScene).restart() 
+            ;(this.scene as GameScene).confirmSfx?.play()
         }
         const button = this.scene.add.rectangle(0, 0, 180, 40, 0x00ff00)
             .setInteractive()
@@ -30,6 +31,7 @@ export default class GameOverOverlay extends Phaser.GameObjects.Container {
             .setInteractive()
         restart.on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, () => {
             restart.setColor('#fff')
+            ;(this.scene as GameScene).hoverSfx?.play()
         })
         restart.on(Phaser.Input.Events.GAMEOBJECT_POINTER_OUT, () => {
             restart.setColor('#000')

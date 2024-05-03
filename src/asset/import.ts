@@ -5,10 +5,16 @@ import _theoniteData from './theonite.json'
 import _fullscreen from './fullscreen.png'
 import _fullscreen2 from './fullscreen_2.png'
 import _click from './click.png'
+import _particle from './particle.png'
+import _jet from './jet.mp3'
+import _explode from './die.mp3'
+import _theoniteSfx from './coin.mp3'
+import _confirm from './confirm.flac'
+import _hover from './hover.flac'
 import Phaser from 'phaser'
 
 enum Type {
-    image, spritesheet
+    image, spritesheet, audio
 }
 
 type Data = undefined | {
@@ -44,7 +50,13 @@ const assets = {
     theonite: new Asset(_theonite, Type.spritesheet, {anim: _theoniteData}),
     fullscreen: new Asset(_fullscreen, Type.image),
     fullscreen2: new Asset(_fullscreen2, Type.image),
-    click: new Asset(_click, Type.image)
+    click: new Asset(_click, Type.image),
+    particle: new Asset(_particle, Type.image),
+    jet: new Asset(_jet, Type.audio),
+    explode: new Asset(_explode, Type.audio),
+    theoniteSfx: new Asset(_theoniteSfx, Type.audio),
+    confirm: new Asset(_confirm, Type.audio),
+    hover: new Asset(_hover, Type.audio),
 }
 export default assets
 
@@ -61,7 +73,7 @@ export function loadAssetsTo(scene: Phaser.Scene) {
         switch (v.type) {
             case Type.image:
                 scene.load.image(v.id, v.path)
-                break;
+                break
             case Type.spritesheet:
                 const data = v.data!.anim!
                 scene.load.spritesheet(v.id, v.path, {
@@ -78,7 +90,10 @@ export function loadAssetsTo(scene: Phaser.Scene) {
                         })
                     }))
                 }
-                break;
+                break
+            case Type.audio:
+                scene.load.audio(v.id, v.path)
+                break
             default:
                 reportError('Unhandled switch case')
         }

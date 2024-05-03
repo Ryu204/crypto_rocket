@@ -17,7 +17,7 @@ module.exports = {
                 use: ['style-loader', 'css-loader']
             },
             {
-                test: /\.(jpg|jpeg|png|gif|woff|woff2)$/i,
+                test: /\.(jpg|jpeg|png|gif|woff|woff2|mp3|flac)$/i,
                 exclude: /node_modules/,
                 type: 'asset/resource'
             }

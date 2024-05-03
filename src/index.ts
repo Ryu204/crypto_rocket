@@ -7,7 +7,7 @@ import config from './config'
 try {
 
 const gameConfig: Phaser.Types.Core.GameConfig = {
-    type: Phaser.CANVAS,
+    type: Phaser.WEBGL,
     canvas: document.getElementById('gameCanvas') as HTMLCanvasElement,
     physics: {
         default: 'arcade',
