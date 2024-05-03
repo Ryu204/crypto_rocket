@@ -2,11 +2,11 @@ const config = {
     "spawner": {
         "interval": 2.5,
         "timePerScreenWidth": 5,
-        "sizePerBird": 1.5,
+        "sizePerRocket": 1.5,
         "maxAmplitude": 200,
         "fuel": 2
     },
-    "bird": {
+    "rocket": {
         "beginAmplitudePerWidth": 0.7,
         "beginAnimationSpeed": 0.006,
         "width": 20,

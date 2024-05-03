@@ -1,13 +1,13 @@
-import Phaser from 'phaser';
-import assets, { loadAssetsTo, finishLoading } from './asset/import';
-import Bird from './bird';
-import Spawner from './spawner';
-import Control, { Events } from './control';
-import Score from './score';
-import GameOverOverlay from './gameOverOverlay';
-import FullscreenButton from './fullscreen';
+import Phaser from 'phaser'
+import assets, { loadAssetsTo, finishLoading } from './asset/import'
+import Rocket from './rocket'
+import Spawner from './spawner'
+import Control, { Events } from './control'
+import Score from './score'
+import GameOverOverlay from './gameOverOverlay'
+import FullscreenButton from './fullscreen'
 import config from './config'
-import FuelBar from './fuelBar';
+import FuelBar from './fuelBar'
 
 enum State {
     idle, game, gameOver
@@ -16,7 +16,7 @@ enum State {
 export class GameScene extends Phaser.Scene {
 
     private mState: State = State.idle
-    private mBird: Bird | undefined
+    private mRocket: Rocket | undefined
     private mSpawner: Spawner | undefined
 
     control: Control | undefined
@@ -43,9 +43,9 @@ export class GameScene extends Phaser.Scene {
 
         this.control = new Control(this)
 
-        this.mBird = this.makeBird()
+        this.mRocket = this.makeRocket()
         const { score, fs, fuelBar, clickImg, cf, hv } = this.makeUi()
-        this.mSpawner = this.add.existing(new Spawner(this, this.mBird, score)) as Spawner
+        this.mSpawner = this.add.existing(new Spawner(this, this.mRocket, score)) as Spawner
         this.mState = State.idle
         this.confirmSfx = cf
         this.hoverSfx = hv
@@ -60,7 +60,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     startGame() {
-        this.mBird!.play()
+        this.mRocket!.play()
         this.mSpawner!.startSpawning()
         this.mState = State.game
     }
@@ -69,7 +69,7 @@ export class GameScene extends Phaser.Scene {
         if (this.mState == State.gameOver)
         this.mState = State.gameOver
         this.mSpawner!.stop()
-        this.mBird!.die(mute)
+        this.mRocket!.die(mute)
         this.add.existing(new GameOverOverlay(this))
         this.cameras.main.shake(100, 0.01)
     }
@@ -103,15 +103,15 @@ export class GameScene extends Phaser.Scene {
         return cam.scrollY + cam.displayHeight + offset
     }
 
-    private makeBird() {
-        const bird = this.add.existing(new Bird(this, this.control!.inGame)) as Bird
-        return bird
+    private makeRocket() {
+        const rocket = this.add.existing(new Rocket(this, this.control!.inGame)) as Rocket
+        return rocket
     }
 
     private makeUi() {
         const score = this.add.existing(new Score(this))
         const fs = this.add.existing(new FullscreenButton(this, this.scale.isFullscreen))
-        const fuelBar = this.add.existing(new FuelBar(this, this.mBird!))
+        const fuelBar = this.add.existing(new FuelBar(this, this.mRocket!))
         const clickImg = this.add.image(0, 0, assets.click.id)
         const cf = this.sound.add(assets.confirm.id)
         const hv = this.sound.add(assets.hover.id)

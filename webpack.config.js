@@ -1,4 +1,5 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 const path = require('path')
 
 module.exports = {
@@ -14,7 +15,7 @@ module.exports = {
             {
                 test: /\.css$/,
                 exclude: /node_modules/,
-                use: ['style-loader', 'css-loader']
+                use: [MiniCssExtractPlugin.loader, 'css-loader']
             },
             {
                 test: /\.(jpg|jpeg|png|gif|woff|woff2|mp3|flac)$/i,
@@ -28,10 +29,11 @@ module.exports = {
     },
     plugins: [
         new HtmlWebpackPlugin({
-            title: 'Phaser game',
+            title: 'Crypto rocket',
             filename: 'index.html',
-            template: 'src/index.html'
-        })
+            template: 'src/index.html',
+        }),
+        new MiniCssExtractPlugin()
     ],
     mode: 'development',
     devtool: false,

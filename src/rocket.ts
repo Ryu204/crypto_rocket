@@ -19,7 +19,7 @@ enum AnimTags {
     fall = 'still'
 }
 
-export default class Bird extends Phaser.GameObjects.Container {
+export default class Rocket extends Phaser.GameObjects.Container {
     mInGame: InGame
     mState: State
     mSprite: Phaser.GameObjects.Sprite
@@ -42,14 +42,14 @@ export default class Bird extends Phaser.GameObjects.Container {
 
         this.mInGame = inGameControl
         this.mState = State.idle
-        this.fuelCurrent = this.fuelCapacity = config.bird.fuel
+        this.fuelCurrent = this.fuelCapacity = config.rocket.fuel
     }
 
     preUpdate(time: number, delta: number) {
         switch (this.mState) {
             case State.idle:
-                const amp = config.bird.beginAmplitudePerWidth * config.bird.width
-                this.setY(amp * Math.sin(time * config.bird.beginAnimationSpeed))
+                const amp = config.rocket.beginAmplitudePerWidth * config.rocket.width
+                this.setY(amp * Math.sin(time * config.rocket.beginAnimationSpeed))
                 break
             case State.boost:
                 if (!this.mJetSfx.isPlaying) {
@@ -57,11 +57,11 @@ export default class Bird extends Phaser.GameObjects.Container {
                         detune: -10 * this.y,
                     })
                 }
-                this.fuelCurrent -= delta / 1000 * config.bird.fuelSpeed
+                this.fuelCurrent -= delta / 1000 * config.rocket.fuelSpeed
                 this.limitUpVelocity() // Cannot go up too fast
                 this.arcadeBody.velocity.y = Math.min(this.arcadeBody.velocity.y, 0) // Immediately change velocity when pressed
                 this.mSprite.rotation = Math.min(this.mSprite.rotation, Math.PI / 2)
-                this.arcadeBody.setAccelerationY(-config.bird.pushStrength)
+                this.arcadeBody.setAccelerationY(-config.rocket.pushStrength)
                 if (this.fuel < 0 || !this.mInGame.holding) {
                     this.mSprite.play(AnimTags.fall)
                     this.arcadeBody.setAccelerationY(0)
@@ -72,7 +72,7 @@ export default class Bird extends Phaser.GameObjects.Container {
                     (this.scene as GameScene).gameOver(false)
                 break
             case State.fall:
-                this.fuelCurrent -= delta / 1000 * config.bird.fuelSpeed * config.bird.fallFuelSpeedScale
+                this.fuelCurrent -= delta / 1000 * config.rocket.fuelSpeed * config.rocket.fallFuelSpeedScale
                 if (this.mInGame.holding && this.fuel > 0) {
                     this.mSprite.play(AnimTags.boost)
                     this.mState = State.boost
@@ -122,7 +122,7 @@ export default class Bird extends Phaser.GameObjects.Container {
     private buildVisual() {
         const sprite = this.scene.add.sprite(0, 0, assets.missile.id)
         this.add(sprite).setDepth(1)
-        sprite.setScale(config.bird.scale).setRotation(Math.PI / 2)
+        sprite.setScale(config.rocket.scale).setRotation(Math.PI / 2)
         sprite.anims.play(AnimTags.boost)
 
         const smoke = this.scene.add.existing(new Smoke(this, new Phaser.Math.Vector2(-15, 0), 50))
@@ -133,8 +133,8 @@ export default class Bird extends Phaser.GameObjects.Container {
         this.scene.physics.add.existing(this)
         const body = this.body as Phaser.Physics.Arcade.Body
         
-        body.setSize(config.bird.width, config.bird.width)
-            .setOffset(-config.bird.width / 2, -config.bird.width / 2)
+        body.setSize(config.rocket.width, config.rocket.width)
+            .setOffset(-config.rocket.width / 2, -config.rocket.width / 2)
             .setAllowGravity(false)
             .setCollideWorldBounds(true)
     }
@@ -149,13 +149,13 @@ export default class Bird extends Phaser.GameObjects.Container {
     }
 
     private limitUpVelocity() {
-        this.arcadeBody.velocity.y = Math.max(this.arcadeBody.velocity.y, -config.bird.maxVelocityY)
+        this.arcadeBody.velocity.y = Math.max(this.arcadeBody.velocity.y, -config.rocket.maxVelocityY)
     }
 
     private updateRotation(dt: number) {
         if (this.mState == State.dead)
             return
-        const omega = config.bird.omegaPerVelY * this.arcadeBody.velocity.y
+        const omega = config.rocket.omegaPerVelY * this.arcadeBody.velocity.y
         this.mSprite.rotation += omega * dt / 1000
         this.mSprite.setRotation(Phaser.Math.Clamp(this.mSprite.rotation, Math.PI / 4, 3 * Math.PI / 4))
         this.mSmoke.updateAngle(this.mSprite.angle + 90)
