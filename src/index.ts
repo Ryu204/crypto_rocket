@@ -1,7 +1,8 @@
-import './css/style.css'
+import './asset/style.css'
+import './asset/MinecraftRegular-Bmg3.woff2'
 import Phaser from 'phaser'
 import { GameScene } from './gameScene'
-import config from './config.json'
+import config from './config'
 
 try {
 
@@ -15,7 +16,7 @@ const gameConfig: Phaser.Types.Core.GameConfig = {
                 x: 0,
                 y: config.game.gravity
             },
-            debug: true
+            debug: false
         }
     },
     scene: [GameScene],

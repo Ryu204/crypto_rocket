@@ -1,7 +1,7 @@
-{
+const config = {
     "spawner": {
         "interval": 2.5,
-        "pipeSpeed": 100,
+        "timePerScreenWidth": 5,
         "sizePerBird": 1.5,
         "maxAmplitude": 200,
         "fuel": 2
@@ -19,8 +19,10 @@
         "fallFuelSpeedScale": 0.2
     },
     "game": {
-        "width": 500,
-        "height": 500,
+        "width": Math.min(500, screen.availWidth - 10),
+        "height": Math.min(500, screen.availHeight - 10),
         "gravity": 1000
     }
 }
+
+export default config

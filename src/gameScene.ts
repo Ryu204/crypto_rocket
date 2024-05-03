@@ -1,12 +1,12 @@
 import Phaser from 'phaser';
-import { loadAssetsTo, finishLoading } from './asset/import';
+import assets, { loadAssetsTo, finishLoading } from './asset/import';
 import Bird from './bird';
 import Spawner from './spawner';
 import Control, { Events } from './control';
 import Score from './score';
 import GameOverOverlay from './gameOverOverlay';
 import FullscreenButton from './fullscreen';
-import config from './config.json'
+import config from './config'
 import FuelBar from './fuelBar';
 
 enum State {
@@ -41,7 +41,7 @@ export class GameScene extends Phaser.Scene {
         this.control = new Control(this)
 
         this.mBird = this.makeBird()
-        const { score } = this.makeUi()
+        const { score, fs, fuelBar, clickImg } = this.makeUi()
         this.mSpawner = this.add.existing(new Spawner(this, this.mBird, score)) as Spawner
         this.mState = State.idle
 
@@ -49,6 +49,8 @@ export class GameScene extends Phaser.Scene {
             if (this.mState != State.idle)
                 return
             this.startGame()
+            score.setAlpha(1)
+            clickImg.destroy()
         })
     }
 
@@ -103,6 +105,10 @@ export class GameScene extends Phaser.Scene {
         const score = this.add.existing(new Score(this))
         const fs = this.add.existing(new FullscreenButton(this, this.scale.isFullscreen))
         const fuelBar = this.add.existing(new FuelBar(this, this.mBird!))
+        const clickImg = this.add.image(0, 0, assets.click.id)
+
+        score.setAlpha(0)
+        clickImg.setScale(2).setY(100)
         this.scale.removeAllListeners()
         this.scale.on(Phaser.Scale.Events.ENTER_FULLSCREEN, () => {
             this.scale.resize(screen.width * config.game.height / screen.height, config.game.height)
@@ -112,6 +118,6 @@ export class GameScene extends Phaser.Scene {
             this.scale.resize(config.game.width, config.game.height)
             this.restart()
         })
-        return { score, fs, fuelBar }
+        return { score, fs, fuelBar, clickImg }
     }
 }

@@ -1,7 +1,7 @@
 import Phaser from 'phaser'
 import assets from './asset/import'
 import { InGame } from './control'
-import config from './config.json'
+import config from './config'
 import { GameScene } from './gameScene'
 
 enum State {

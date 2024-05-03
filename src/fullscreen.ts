@@ -9,7 +9,7 @@ export default class FullscreenButton extends Phaser.GameObjects.Image {
             : assets.fullscreen.id
         )
         this.setDisplaySize(20, 20)
-            .setOrigin(0, 1)
+            .setOrigin(0, 0)
             .setDepth(2)
             .setInteractive()
             .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, (ptr: any, x: any, y: any, ip: Phaser.Types.Input.EventData) => {
@@ -22,7 +22,7 @@ export default class FullscreenButton extends Phaser.GameObjects.Image {
     private resetPosition() {
         this.setPosition(
             (this.scene as GameScene).leftLimit(-10),
-            (this.scene as GameScene).bottomLimit(-10)
+            (this.scene as GameScene).topLimit(-10)
         )
         return this
     }

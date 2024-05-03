@@ -1,7 +1,7 @@
 import Phaser, { Physics } from 'phaser'
 import assets from './asset/import'
 import Bird from './bird'
-import config from './config.json'
+import config from './config'
 import Score from './score'
 import { GameScene } from './gameScene'
 
@@ -15,7 +15,8 @@ class Theonite extends Phaser.GameObjects.Container {
         ;(theonite.body as Phaser.Physics.Arcade.Body)
             .setImmovable(true)
             .setAllowGravity(false)
-            .setVelocityX(-config.spawner.pipeSpeed)
+            .setVelocityX(- this.scene.scale.gameSize.width / config.spawner.timePerScreenWidth)
+        console.log(this.scene.scale.gameSize)
         scene.physics.add.overlap(bird, theonite, (b, m) => { 
             score.increase() 
             this.destroy()
@@ -90,7 +91,7 @@ export default class Spawner extends Phaser.GameObjects.Group {
 
     private spawn() {
         const pipes = this.scene.add.existing(new Theonite(this.scene as GameScene, this.mBird, this.mScore))
-        pipes.x = (this.scene as GameScene).rightLimit()
+        pipes.x = (this.scene as GameScene).rightLimit(0)
         pipes.y = (this.mRnd.frac() * 2 - 1) * config.spawner.maxAmplitude
         this.add(pipes)
     }

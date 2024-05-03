@@ -1,6 +1,6 @@
 import Phaser from 'phaser'
 
-export interface options {
+export interface Options {
     width?: number,
     height?: number,
     background?: number,
@@ -11,8 +11,8 @@ export interface options {
 }
 
 export default class ProgressBar extends Phaser.GameObjects.Rectangle {
-    bar: Phaser.GameObjects.Rectangle
-    margin: number
+    private bar: Phaser.GameObjects.Rectangle
+    private margin: number
     
     constructor(scene: Phaser.Scene, {
         width = 100,
@@ -22,7 +22,7 @@ export default class ProgressBar extends Phaser.GameObjects.Rectangle {
         x = 0,
         y = 0,
         margin = 2,
-    }: options) {
+    }: Options) {
         super(scene, x, y, width, height, background)
         this.setOrigin(0, 0).setDepth(1)
         this.bar = scene.add.rectangle(
@@ -32,12 +32,17 @@ export default class ProgressBar extends Phaser.GameObjects.Rectangle {
             height - 2 * margin, 
             foreground
         )
-        this.bar.setOrigin(0, 0).setDepth(this.depth + 1)
+        this.bar.setOrigin(0, 0).setDepth(this.depth + 3)
         this.margin = margin
     }
 
     setProgress(percent: number) {
         percent = Phaser.Math.Clamp(percent, 0, 1)
         this.bar.setSize((this.width - 2 * this.margin) * percent, this.bar.height)
+    }
+
+    setColor(background?: number, foreground?: number) {
+        this.fillColor = background ?? this.fillColor
+        this.bar.fillColor = foreground ?? this.bar.fillColor
     }
 }
