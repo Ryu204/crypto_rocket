@@ -112,7 +112,7 @@ export default class Rocket extends Phaser.GameObjects.Container {
         this.arcadeBody.destroy()
         this.mState = State.dead
         this.mSprite.play(AnimTags.die).setRotation(Math.PI / 2)
-        this.mSmoke.setAlpha(0)
+        this.mSmoke.stop()
         this.mJetSfx.stop()
         if (!mute) {
             this.scene.sound.add(assets.explode.id).play()

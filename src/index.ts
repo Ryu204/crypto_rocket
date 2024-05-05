@@ -1,5 +1,10 @@
 import './asset/style.css'
 import './asset/MinecraftRegular-Bmg3.woff2'
+import './asset/logo.ico'
+import './asset/page_bgr.png'
+import './asset/gh-logo.png'
+import './asset/sepolia-logo.png'
+
 import Phaser from 'phaser'
 import { GameScene } from './gameScene'
 import config from './config'

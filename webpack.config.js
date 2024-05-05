@@ -18,7 +18,7 @@ module.exports = {
                 use: [MiniCssExtractPlugin.loader, 'css-loader']
             },
             {
-                test: /\.(jpg|jpeg|png|gif|woff|woff2|mp3|flac)$/i,
+                test: /\.(jpg|jpeg|png|gif|woff|woff2|mp3|flac|ico)$/i,
                 exclude: /node_modules/,
                 type: 'asset/resource'
             }

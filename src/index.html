@@ -4,19 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= htmlWebpackPlugin.options.title %></title>
-    <link rel="preload" href="MinecraftRegular-Bmg3.woff2" as="font" crossorigin="anonymous">
+    <link rel="preload" href="./MinecraftRegular-Bmg3.woff2" as="font" crossorigin="anonymous">
+    <link rel="icon" href="./logo.ico">
 </head>
 <body>
     <header>
-        <h1>Try your score or something</h1>
+        <h1>Crypto Rocket</h1>
     </header>
     <main>
         <div id="gameContainer">
             <canvas id="gameCanvas"></canvas>
         </div>
+        <div id="logos">
+            <a href="https://github.com/Ryu204/crypto_bird" target="_blank">
+                <img class="logo" src="./gh-logo.png" alt="GitHub repository">
+            </a>
+            <a href="https://sepolia.etherscan.io/" target="_blank">
+                <img class="logo" src="./sepolia-logo.png" alt="Sepolia address">
+            </a>
+        </div>
+        <div class="text">
+            <h2>How to play</h2>
+            <ul>
+                <li>Spacebar/Press and hold to boost the rocket</li>
+                <li>Over time it will run out of fuel, so collect the shinies to refill your bar</li>
+            </ul>
+            <h2>About this project</h2>
+            <p>This is a weekend project to learn the basis of Ethereum's smart contract and TypeScript.</p>
+            <p>The donate button is fake since the contract was deployed on Sepolia.</p>
+            <p>However, I would appreciate if you show your support by starring my repo &star;.</p>
+            <p>Thanks for trying out my game!</p>
+        </div>
     </main>
     <footer>
-        <p>Made with &hearts; by <em>Ryu204</em></p>
+        <div class="divider"></div>
+        <p>Made with <span style="color:red">&hearts;</span> by <em>Ryu204</em></p>
     </footer>
 </body>
 </html>
