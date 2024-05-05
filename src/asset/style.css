@@ -5,7 +5,6 @@
 
 :root {
     font-family: 'Minecraft';
-    background-image: url('./page_bgr.png');
     color: #02b0eb;
 }
 
@@ -13,7 +12,6 @@ body {
     padding: 0px;
     margin: 0px auto;
     background-color: #121222;
-    max-width: 900px;
 }
 
 header, #gameContainer {

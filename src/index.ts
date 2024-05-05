@@ -1,7 +1,6 @@
 import './asset/style.css'
 import './asset/MinecraftRegular-Bmg3.woff2'
 import './asset/logo.ico'
-import './asset/page_bgr.png'
 import './asset/gh-logo.png'
 import './asset/sepolia-logo.png'
 
@@ -29,14 +28,15 @@ const gameConfig: Phaser.Types.Core.GameConfig = {
         createContainer: true
     },
     scale: {
-        mode: Phaser.Scale.NONE,
-        fullscreenTarget: 'gameCanvas',  
         width: config.game.width,
         height: config.game.height,
     },
     pixelArt: true,
-    parent: document.getElementById('gameContainer')!,
+    parent: 'gameContainer',
     autoMobilePipeline: true,
+    fullscreenTarget: 'gameCanvas',
+    width: config.game.width,
+    height: config.game.height,
 }
 
 const game = new Phaser.Game(gameConfig)
