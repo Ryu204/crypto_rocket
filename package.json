@@ -3,14 +3,16 @@
   "version": "0.0.1",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "cd contract && npx hardhat test",
     "build": "webpack"
   },
   "author": "Ryu204",
   "license": "MIT",
   "description": "",
   "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
     "css-loader": "^7.1.1",
+    "hardhat": "^2.22.3",
     "html-webpack-plugin": "^5.6.0",
     "mini-css-extract-plugin": "^2.9.0",
     "phaser": "^3.80.1",
