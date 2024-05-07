@@ -8,33 +8,29 @@ import GameOverOverlay from './gameOverOverlay'
 import FullscreenButton from './fullscreen'
 import config from './config'
 import FuelBar from './fuelBar'
+import theme from './theme'
+import { BaseScene } from './baseScene'
 
 enum State {
     idle, game, gameOver
 }
 
-export class GameScene extends Phaser.Scene {
+export class GameScene extends BaseScene {
 
     private mState: State = State.idle
     private mRocket: Rocket | undefined
     private mSpawner: Spawner | undefined
 
     control: Control | undefined
-    confirmSfx: Phaser.Sound.BaseSound | undefined
-    hoverSfx: Phaser.Sound.BaseSound | undefined
 
     constructor() {
         super({ key: 'game' })
     }
 
-    preload() {
-        loadAssetsTo(this)
-    }
-
-    create() {
-        finishLoading()
+    override create() {
+        super.create()
         const camera = this.cameras.main
-            .setBackgroundColor(0x443355)
+            .setBackgroundColor(theme.background)
             .centerOn(0, 0)
 
         this.physics.world.bounds
@@ -44,11 +40,9 @@ export class GameScene extends Phaser.Scene {
         this.control = new Control(this)
 
         this.mRocket = this.makeRocket()
-        const { score, fs, fuelBar, clickImg, cf, hv } = this.makeUi()
+        const { score, fs, fuelBar, clickImg} = this.makeUi()
         this.mSpawner = this.add.existing(new Spawner(this, this.mRocket, score)) as Spawner
         this.mState = State.idle
-        this.confirmSfx = cf
-        this.hoverSfx = hv
 
         this.control.inGame.events.on(Events.keyUp, () => { 
             if (this.mState != State.idle)
@@ -83,26 +77,6 @@ export class GameScene extends Phaser.Scene {
         this.control!.update()
     }
 
-    rightLimit(offset: number = 100) {
-        const cam = this.cameras.main
-        return cam.scrollX + cam.displayWidth + offset
-    }
-
-    leftLimit(offset: number = 100) {
-        const cam = this.cameras.main
-        return cam.scrollX - offset
-    }
-
-    topLimit(offset: number = 100) {
-        const cam = this.cameras.main
-        return cam.scrollY - offset
-    }
-
-    bottomLimit(offset: number = 100) {
-        const cam = this.cameras.main
-        return cam.scrollY + cam.displayHeight + offset
-    }
-
     private makeRocket() {
         const rocket = this.add.existing(new Rocket(this, this.control!.inGame)) as Rocket
         return rocket
@@ -113,8 +87,6 @@ export class GameScene extends Phaser.Scene {
         const fs = this.add.existing(new FullscreenButton(this, this.scale.isFullscreen))
         const fuelBar = this.add.existing(new FuelBar(this, this.mRocket!))
         const clickImg = this.add.image(0, 0, assets.click.id)
-        const cf = this.sound.add(assets.confirm.id)
-        const hv = this.sound.add(assets.hover.id)
 
         score.setAlpha(0)
         clickImg.setScale(2).setY(100)
@@ -127,13 +99,6 @@ export class GameScene extends Phaser.Scene {
             this.resize(config.game.width, config.game.height)
             this.restart()
         })
-        return { score, fs, fuelBar, clickImg, cf, hv }
-    }
-
-    private resize(width: number, height: number) {
-        this.scale.resize(width, height)
-        if (this.game.config.renderType == Phaser.WEBGL) {
-            this.game.renderer.resize(width, height)
-        }
+        return { score, fs, fuelBar, clickImg }
     }
 }

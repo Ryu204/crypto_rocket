@@ -1,6 +1,10 @@
 import Phaser from 'phaser'
 import theme from './theme'
 import { GameScene } from './gameScene'
+import Button from './button'
+import provider from './api/provider'
+import Textfield from './textfield'
+import { BaseScene } from './baseScene'
 
 export default class GameOverOverlay extends Phaser.GameObjects.Container {
     constructor(scene: Phaser.Scene) {
@@ -16,28 +20,27 @@ export default class GameOverOverlay extends Phaser.GameObjects.Container {
 
         const restartCallback = () => { 
             ;(this.scene as GameScene).restart() 
-            ;(this.scene as GameScene).confirmSfx?.play()
         }
-        const button = this.scene.add.rectangle(0, 0, 180, 40, 0x00ff00)
-            .setInteractive()
-            .on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, restartCallback)
-            .setY(100)
+        const restart = this.scene.add.existing(new Button(this.scene, 'Restart', restartCallback, 0, 100))
 
-        const restart = this.scene.add.text(button.x, button.y, 'Restart', theme.baseText)
-            .setOrigin(0.5, 0.5)
-            .setFontSize(20)
-            .setColor('#000000')
-            .setStroke('#00', 0)
-            .setInteractive()
-        restart.on(Phaser.Input.Events.GAMEOBJECT_POINTER_OVER, () => {
-            restart.setColor('#fff')
-            ;(this.scene as GameScene).hoverSfx?.play()
-        })
-        restart.on(Phaser.Input.Events.GAMEOBJECT_POINTER_OUT, () => {
-            restart.setColor('#000')
-        })
-        restart.on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, restartCallback)
+        const highscores = () => {
+            this.scene.scene.start('highscores')
+        }
+        const hs = this.scene.add.existing(new Button(this.scene, 'High scores', highscores, 0, 50))
 
-        this.add([text, button, restart])
+        const savescore = this.scene.add.existing(new Button(this.scene, 'Save score', async () => {
+            this.saveScore()
+        }, 0, 0))
+
+        this.add([text, restart, hs, savescore])
+    }
+
+    private async saveScore() {
+        const saveWithName = (name: string) => {
+            provider.saveNewEntry(name, 1)
+        }
+        const textfield = this.scene.add.existing(new Textfield(this.scene as BaseScene, (text: string) => {
+            saveWithName(text)
+        }, 'Your name'))
     }
 }

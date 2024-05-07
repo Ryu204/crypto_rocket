@@ -19,8 +19,8 @@ const config = {
         "fallFuelSpeedScale": 0.2
     },
     "game": {
-        "width": Math.min(500, screen.availWidth - 10),
-        "height": Math.min(500, screen.availHeight - 10),
+        "width": Math.min(500, screen.availWidth - 30),
+        "height": Math.min(500, screen.availHeight - 30),
         "gravity": 1000
     }
 }

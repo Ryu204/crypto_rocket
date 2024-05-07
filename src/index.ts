@@ -7,6 +7,7 @@ import './asset/sepolia-logo.png'
 import Phaser from 'phaser'
 import { GameScene } from './gameScene'
 import config from './config'
+import HighScoreScene from './highscores'
 
 try {
 
@@ -23,7 +24,7 @@ const gameConfig: Phaser.Types.Core.GameConfig = {
             debug: false
         }
     },
-    scene: [GameScene],
+    scene: [GameScene, HighScoreScene],
     dom: {
         createContainer: true
     },
