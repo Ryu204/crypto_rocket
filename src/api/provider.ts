@@ -48,7 +48,7 @@ export class Provider {
             })
             return true
         } catch (e: any) {
-            this.logError(`Cannot creat wallet client`, `${e.stack}`)
+            this.logError(`Cannot creat wallet client. Have you installed a crypto wallet?`, `${e.stack}`)
             return false
         }
     }
@@ -93,14 +93,13 @@ export class Provider {
         if (!await this.createWallet() || !await this.createPublic()) {
             return
         }
-        const accounts = await this.connect()
-        if (accounts.length == 0) {
-            this.logError('No account found', 'Please check that you have a wallet extension installed')
-            return
-        }
-        const [ account ] = accounts
-        
         try {
+            const accounts = await this.connect()
+            if (accounts.length == 0) {
+                this.logError('No account found', 'Please check that you have a wallet extension installed')
+                return
+            }
+            const [ account ] = accounts
             const { request } = await this.publicClient!.simulateContract({
                 address: info.address as Address,
                 abi: info.abi,
@@ -110,7 +109,7 @@ export class Provider {
             })
             await this.walletClient!.writeContract(request)
         } catch (e: any) {
-            this.logError('Cannot call smart contract', `${e.stack}`)
+            this.logError('Cannot call smart contract. Please make sure your active account is on Sepolia', `${e.stack}`)
         }
     }
 
