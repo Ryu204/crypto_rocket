@@ -1,5 +1,5 @@
 import Phaser from 'phaser'
-import assets, { loadAssetsTo, finishLoading } from './asset/import'
+import assets from './asset/import'
 import Rocket from './rocket'
 import Spawner from './spawner'
 import Control, { Events } from './control'

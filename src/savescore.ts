@@ -1,5 +1,4 @@
 import Phaser from 'phaser'
-import theme from './theme'
 import Button from './button'
 import FullscreenButton from './fullscreen'
 import { BaseScene } from './baseScene'
