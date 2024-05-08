@@ -4,7 +4,8 @@ const baseText: Phaser.Types.GameObjects.Text.TextStyle = {
     fontSize: 40,
     fontFamily: 'Minecraft',
     stroke: '#000000',
-    strokeThickness: 2
+    strokeThickness: 2,
+    color: '#ffffff'
 }
 
 const titleText = structuredClone(baseText)
@@ -17,11 +18,15 @@ scoreText.fontSize = 40
 const disabledText = structuredClone(baseText)
 disabledText.color = '#444444'
 
+const smallText = structuredClone(baseText)
+smallText.fontSize = 20
+
 const theme = {
     baseText: baseText,
     scoreText: scoreText,
     titleText: titleText,
     disabledText: disabledText,
+    smallText: smallText,
     background: 0x443355,
 }
 

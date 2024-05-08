@@ -2,14 +2,14 @@ import Phaser from 'phaser'
 import theme from './theme'
 import { GameScene } from './gameScene'
 import Button from './button'
-import provider from './api/provider'
-import Textfield from './textfield'
-import { BaseScene } from './baseScene'
 
 export default class GameOverOverlay extends Phaser.GameObjects.Container {
-    constructor(scene: Phaser.Scene) {
+    private mScore: number
+    
+    constructor(scene: Phaser.Scene, score: number) {
         super(scene)
         this.build()
+        this.mScore = score
     }
 
     private build() {
@@ -29,18 +29,10 @@ export default class GameOverOverlay extends Phaser.GameObjects.Container {
         const hs = this.scene.add.existing(new Button(this.scene, 'High scores', highscores, 0, 50))
 
         const savescore = this.scene.add.existing(new Button(this.scene, 'Save score', async () => {
-            this.saveScore()
+            this.scene.data.set('score', this.mScore)
+            this.scene.scene.start('savescore')
         }, 0, 0))
 
         this.add([text, restart, hs, savescore])
-    }
-
-    private async saveScore() {
-        const saveWithName = (name: string) => {
-            provider.saveNewEntry(name, 1)
-        }
-        const textfield = this.scene.add.existing(new Textfield(this.scene as BaseScene, (text: string) => {
-            saveWithName(text)
-        }, 'Your name'))
     }
 }

@@ -20,6 +20,7 @@ export class GameScene extends BaseScene {
     private mState: State = State.idle
     private mRocket: Rocket | undefined
     private mSpawner: Spawner | undefined
+    private mScore: Score | undefined
 
     control: Control | undefined
 
@@ -43,6 +44,7 @@ export class GameScene extends BaseScene {
         const { score, fs, fuelBar, clickImg} = this.makeUi()
         this.mSpawner = this.add.existing(new Spawner(this, this.mRocket, score)) as Spawner
         this.mState = State.idle
+        this.mScore = score
 
         this.control.inGame.events.on(Events.keyUp, () => { 
             if (this.mState != State.idle)
@@ -64,7 +66,7 @@ export class GameScene extends BaseScene {
         this.mState = State.gameOver
         this.mSpawner!.stop()
         this.mRocket!.die(mute)
-        this.add.existing(new GameOverOverlay(this))
+        this.add.existing(new GameOverOverlay(this, this.mScore!.mScore))
         this.cameras.main.shake(100, 0.01)
     }
 

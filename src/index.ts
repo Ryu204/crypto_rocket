@@ -8,6 +8,7 @@ import Phaser from 'phaser'
 import { GameScene } from './gameScene'
 import config from './config'
 import HighScoreScene from './highscores'
+import SaveScoreScene from './savescore'
 
 try {
 
@@ -24,7 +25,7 @@ const gameConfig: Phaser.Types.Core.GameConfig = {
             debug: false
         }
     },
-    scene: [GameScene, HighScoreScene],
+    scene: [GameScene, HighScoreScene, SaveScoreScene],
     dom: {
         createContainer: true
     },
@@ -43,5 +44,5 @@ const gameConfig: Phaser.Types.Core.GameConfig = {
 const game = new Phaser.Game(gameConfig)
 
 } catch (e) {
-    console.log(`error happened: ${e}`)
+    alert(`Fatal error: ${e}`)
 }

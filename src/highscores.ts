@@ -51,9 +51,34 @@ export default class HighScoreScene extends BaseScene {
         })
 
         this.createList()
+
+        this.scale.removeAllListeners()
+        this.scale.on(Phaser.Scale.Events.ENTER_FULLSCREEN, () => {
+            this.resize(screen.width * config.game.height / screen.height, config.game.height)
+            this.scene.restart()
+        })
+        this.scale.on(Phaser.Scale.Events.LEAVE_FULLSCREEN, () => {
+            this.resize(config.game.width, config.game.height)
+            this.scene.restart()
+        })
     }
 
     async createList() {
-        console.log(await provider.getTopRankings())
+        let entries = await provider.getTopRankings()
+        entries = entries.slice(0, 9)
+        while (entries.length < 10) {
+            entries.push({
+                name: 'Unknown',
+                score: 0,
+            })
+        }
+        
+        // Create the score board
+        this.loading?.setAlpha(0)
+        for (const [i, entry] of entries.entries()) {
+            this.add.text(-120, i * 30 - 130, 
+                `${((i + 1).toString() + '.').padEnd(3, '_')}_${entry.score.toString().padStart(9, '0')}_${entry.name}`, theme.smallText)
+                .setOrigin(0, 0.5)
+        }
     }
 }

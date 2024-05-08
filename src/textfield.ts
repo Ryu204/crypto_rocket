@@ -9,12 +9,14 @@ export default class Textfield extends Phaser.GameObjects.Text {
     private hiddenInput: HTMLElement | undefined
 
     constructor(scene: BaseScene, onSubmit: (text: string) => void, prompt = 'Enter', x: number = 0, y: number = 0, maxLength: number = 10) {
-        super(scene, x, y, prompt, theme.disabledText)
+        super(scene, x, y, prompt, theme.baseText)
         this.checkMobile()
         this.setOrigin(0, 0.5)
+            .setAlpha(0.5)
             .setInteractive().on(Phaser.Input.Events.GAMEOBJECT_POINTER_UP, () => {
                 if (this.isEntering)
                     return;
+                this.setAlpha(1)
                 this.isEntering = true
                 this.text = this.currentText + '_'
                 if (Textfield.isMobile)
@@ -30,12 +32,12 @@ export default class Textfield extends Phaser.GameObjects.Text {
                 if (this.currentText.length == 0) {
                     this.scene.cameras.main.shake(30, .01, true)
                     this.text = prompt
-                }
-                else {
+                    this.setAlpha(0.5)
+                } else {
                     this.text = this.currentText
                     onSubmit(this.currentText)
                 }     
-                this.isEntering = false               
+                this.isEntering = false
                 return
             // Implement backspace
             } else if (event.key == 'Backspace' && this.currentText.length > 0) {

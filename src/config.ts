@@ -25,4 +25,11 @@ const config = {
     }
 }
 
+export enum DevMode {
+    development, production
+}
+export const dev = {
+    "mode": DevMode.development,
+}
+
 export default config
