@@ -1,7 +1,0 @@
-{
-    "width": 16,
-    "height": 32,
-    "actions": [
-      { "name": "idle", "from": 0, "to": 1, "loop": true, "fps": 1.7 }
-    ]
-  }
